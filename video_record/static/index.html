@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Webcam Recording</title>
+        <style>
+            #myVideo {
+                border: 1px solid black;
+                width: 640px;
+                height: 480px;
+                display: none;
+            }
+
+            button{
+                margin-top: 10px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Webcam Recording</h1>
+
+        <!-- 비디오 스트림을 표기 -->
+        <video id="myVideo" width="640" height="640" autoplay></video>
+
+        <!-- 녹화 시작 및 중지 버튼 -->
+        <button id="startRecording">녹화 시작</button>
+        <button id="stopRecording" disabled>녹화 중지</button>
+
+        <script>
+            let videoElement = document.getElementById('myVideo');
+            let mediaRecorder;
+            let recordedChunks = [];
+
+            // webcam 스트림 데이터를 받아서 화면에 표기
+            async function startCamera() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: true
+                    })
+
+                    videoElement.srcObject = stream;
+                    mediaRecorder = new MediaRecorder(stream);
+
+                    mediaRecorder.ondataavailable = (event) => {
+                        if(event.data.size > 0 ){
+                            recordedChunks.push(event.data);
+                        }
+                    }
+                    mediaRecorder.onstop = () => {
+                        const b = new Blob(recordedChunks, { type: 'video/webm' });
+                        
+                        //TODO 서버로 업로드
+                        recordedChunks = [];
+                    }
+                } catch (error) {
+                    console.error('Error accessing webcam: ', error);
+                }
+            }
+
+        </script>
+    </body>
+    
+</html>

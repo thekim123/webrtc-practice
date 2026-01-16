@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <form 
+        id="uploadForm" 
+        enctype="multipart/form-data" 
+        method="POST" 
+        action="/upload">
+        <label for="fileInput">MP4 File:</label>
+        <input type="file" id="file" name="file" required>
+        <label for="fileName">Save As FileName</label>
+        <input 
+            type="text" 
+            id="fileName" 
+            name="fileName" 
+            placeholder="example.mp4"
+        />
+        <br/>
+        <button type="submit">Upload</button>
+        # 파일을 받고 해당 파일을 서버에서 청크로 분리하여 관리
+    </form>
+
+    <h2>Playback</h2>
+    <form id="playbackForm">
+        <label for="playFileName">File Name to Play:</label>
+        <input 
+            type="text" 
+            id="playFileName" 
+            name="playFileName" 
+            placeholder="example.mp4"
+        />
+        <button type="button" onclick="playVideo()">Play</button>
+    </form>
+    <video id="videoPlayer" controls width="600"></video>
+
+    <script>
+        function playVideo(){
+            const fileName = document.getElementById('playFileName').value;
+            const videoPlayer = document.getElementById('videoPlayer');
+
+            if(fileName){
+                videoPlayer.src = `/video?fileName=${fileName}`;
+                videoPlayer.load();
+                videoPlayer.play();
+            } else {
+                alert('파일 이름을 입력하세요.');
+            }
+
+        }
+    </script>
+</head>
+
+</html>
